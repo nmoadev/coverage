@@ -11,6 +11,7 @@
         <div class="container col-md-4" ng-controller="EditorCtrl as editorCtrl">
             <h3>Your Code</h3>
             <div ng-model="editorCtrl.content" class="panel panel-default" ui-ace="{onLoad: editorCtrl.editorLoaded}"></div>
+            <button class="button button-default" ng-click="editorCtrl.submitCommand()">Submit</button>
         </div>
         <div id="boardSpace" ng-controller="BoardCtrl as board" class="container col-md-4">
             <div ng-repeat="row in board.rows" class="row">

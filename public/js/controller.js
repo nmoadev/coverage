@@ -1,21 +1,6 @@
 var coverageControllers = angular.module('coverage.controllers', []);
 
-coverageControllers.Elf = function(){
-    var thisElf = this;
-    this.commandDictionary = {
-       PUNCH : "punch",
-       KICK : "kick",
-       CRY : "cry"
-    };
-    this.commandHistory = [];
 
-    angular.forEach(this.commandDictionary, function(value, key) {
-        thisElf[value] = function() {
-            thisElf.commandHistory.push(key);
-            return thisElf;
-        }
-    });
-};
 coverageControllers.controller('PlayCtrl', ['$routeParams' , function($routeParams){
     this.matchCode = $routeParams.matchcode;
 }]);
@@ -50,13 +35,11 @@ coverageControllers.controller('BoardCtrl', function ($scope) {
 
 });
 
-coverageControllers.controller('EditorCtrl', function () {
+coverageControllers.controller('EditorCtrl', [ 'CommandSvc', function(CommandSvc) {
     var _this = this,
         content = "";
     this.onEditorChange = function onEditorChange(editor) {
         return function(change) {
-            console.log(editor.getSession().getLength());
-            console.log(change);
             if (editor.getSession().getLength() > 5) {
                 var doc = editor.getSession().getDocument();
                 doc.removeLines(5, doc.getLength()-1);
@@ -69,7 +52,11 @@ coverageControllers.controller('EditorCtrl', function () {
         _editor.getSession().setUseSoftTabs(true);
         _editor.on('change', _this.onEditorChange(_editor));
     };
-});
+    this.submitCommand = function() {
+        CommandSvc.processCode(this.content);
+    }
+
+}]);
 
 coverageControllers.controller('SpriteCtrl', function () {
     this.x = 0;
