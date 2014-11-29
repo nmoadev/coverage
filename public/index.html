@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="coverage">
+<head>
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css"/>
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.css"/>
+    <link rel="stylesheet" href="css/term_styles.css"/>
+    <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+<div class="container-fluid">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#"><span class="glyphicon glyphicon-home"></span>Elf Fighter 6000</a>
+            </div>
+
+
+            <ul class="nav navbar-nav" id="navbar-page-buttons" ng-show="isStorefront()">
+                <li ng-class="navClass('storefront')"><a ng-click="trackButton('navbar_catalog')" href="#/storefront">Catalog</a>
+                </li>
+                <li ng-class="navClass('shoppingcart')"><a ng-click="trackButton('navbar_shoppingcart')"
+                                                           href="#/shoppingcart">Shopping Cart</a></li>
+            </ul>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse">
+                <p class="navbar-right navbar-text">{{model.company.name}}</p>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+    <div ng-view></div>
+</div>
+<script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
+<script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<script type="text/javascript" src="bower_components/angular/angular.js"></script>
+<script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
+<script type="text/javascript" src="bower_components/ace-builds/src-min-noconflict/ace.js"></script>
+<script type="text/javascript" src="bower_components/angular/angular.js"></script>
+<script type="text/javascript" src="bower_components/angular-ui-ace/ui-ace.js"></script>
+<script type="text/javascript" src="js/app.js"></script>
+<script type="text/javascript" src="js/services.js"></script>
+<script type="text/javascript" src="js/controller.js"></script>
+</body>
+</html>

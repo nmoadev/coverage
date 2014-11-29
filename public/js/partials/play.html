@@ -1,0 +1,28 @@
+<div class="container-fluid" ng-controller="PlayCtrl as play">
+    <div class="row">
+    <div class="container col-md-1">
+        <fieldset disabled>
+            <label for="gameCode" class="control-label">Game Code</label>
+            <input id="gameCode" type="text" class="form-control" ng-model="play.matchCode" />
+        </fieldset>
+    </div>
+    </div>
+    <div class="row">
+        <div class="container col-md-4" ng-controller="EditorCtrl as editorCtrl">
+            <h3>Your Code</h3>
+            <div ng-model="editorCtrl.content" class="panel panel-default" ui-ace="{onLoad: editorCtrl.editorLoaded}"></div>
+        </div>
+        <div id="boardSpace" ng-controller="BoardCtrl as board" class="container col-md-4">
+            <div ng-repeat="row in board.rows" class="row">
+                <div ng-repeat="cube in row track by $index" ng-class="board.getClass(cube)">{{cube}}</div>
+            </div>
+        </div>
+        <div class="container col-md-4" ng-controller="EditorCtrl as editorCtrl">
+            <div ng-model="editorCtrl.content" class="panel panel-default" ui-ace="{onLoad: editorCtrl.editorLoaded}"></div>
+        </div>
+    </div>
+    <div class="row">
+        <h3>Help</h3>
+
+    </div>
+</div>

@@ -1,0 +1,34 @@
+{
+    "options" : {
+
+    },
+    "players": {
+        "red": {
+            "name":"Alain"
+        },
+        "blue" : {
+            "name":"Adam"
+        }
+    },
+    "rounds" : [
+        {
+            "red" : {
+                "actions" : [
+                    ["Left", null],
+                    ["Right", null],
+                    ["Jump", 5]
+                ],
+                "score": 10
+            },
+            "blue" : {
+                "actions" : [
+                    ["Left", null],
+                    ["Right", null],
+                    ["Jump", 5]
+                ],
+                "score": 10
+            }
+        }
+    ]
+
+}

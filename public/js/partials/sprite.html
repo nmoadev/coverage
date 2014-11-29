@@ -1,0 +1,27 @@
+<div class="container-fluid" ng-controller="SpriteCtrl as sprite">
+    <div>
+        <div class="form-group">
+            <label for="x" class="control-label">x</label>
+            <input id="x" class="form-control" name="x" type="text"
+                   ng-model="spite.x"/>
+            <label for="y" class="control-label">y</label>
+            <input id="y" class="form-control" name="y" type="text"
+                   ng-model="spite.y"/>
+            <label for="width" class="control-label">width</label>
+            <input id="width" class="form-control" name="width" type="text"
+                   ng-model="spite.width"/>            <label for="x" class="control-label">x</label>
+            <label for="height" class="control-label">height</label>
+            <input id="height" class="form-control" name="height" type="text"
+                   ng-model="spite.height"/>
+            <label for="index" class="control-label">index</label>
+            <input id="index" class="form-control" name="index" type="text"
+                   ng-model="spite.index"/>
+            <label for="offset" class="control-label">offset</label>
+            <input id="offset" class="form-control" name="offset" type="text"
+                   ng-model="spite.offset"/>
+        </div>
+    </div>
+    <div ngStyle="sprite.getStyle()">
+
+    </div>
+</div>
