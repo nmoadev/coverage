@@ -76,12 +76,20 @@ pre {
 }
 
 .cube {
+    float: left;
     margin: 5px;
+    width: 10px;
+    height: 10px;
+    transition: background-color .5s;
 }
 .red {
-    background-color: red
+    background-color: red;
 }
 
 .blue {
-    background-color: blue
+    background-color: blue;
+}
+
+.gray {
+    background-color: gray;
 }

@@ -16,7 +16,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 var httpServer = require('http').Server(app);
-//var io = require('socket.io')(httpServer);
+var io = require('socket.io')(httpServer);
 
 //io.on('connection', function(socket) {
 //    debug('connected');

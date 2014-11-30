@@ -1,39 +1,4 @@
-var coverageServices = angular.module('coverage.services', []);
-
-coverageServices.Cursor = function(){
-    var cursor = {}
-    cursor.commandDictionary = {
-        UP : 'up',
-        DOWN: 'down',
-        LEFT: 'left',
-        RIGHT: 'right',
-        JUMP: 'jump'
-    };
-    cursor.commandList = [];
-    cursor.reset = function reset() {
-      cursor.commandList = [];
-    };
-    angular.forEach(cursor.commandDictionary, function(value, key) {
-        cursor[value] = function() {
-            cursor.commandList.push([key].concat(Array.prototype.slice.call(arguments)));
-            return cursor;
-        }
-    });
-
-    return cursor;
-};
-
-coverageServices.Board = function() {
-  var board = {};
-  board.grid = [];
-  for (var i = 0; i < config.rows, i++) {
-      var row = [];
-      for (var j = 9; j < config.cols, i++) {
-          row.push(null);
-      }
-      board.grid.push(row);
-  };
-};
+var coverageServices = angular.module('coverage.services', ['coverage.Cursor', 'coverage.GameBoard', 'btford.socket-io']);
 
 coverageServices.factory('MatchSvc', ['$q', function($q){
    return {
@@ -41,33 +6,27 @@ coverageServices.factory('MatchSvc', ['$q', function($q){
            var deferred = $q.defer();
            deferred.resolve(Math.floor(Math.random() + 1));
            return deferred.promise;
-       }
+       },
+      boardConfig: {
+        rows: 5,
+        cols: 5
+      }
    }
 }]);
 
-coverageServces.factory('BoardSvc', ['SocketSvc', function(SocketSvc) {
+coverageServices.factory('BoardSvc', ['SocketSvc', 'GameBoard', 'MatchSvc', function(SocketSvc, GameBoard, MatchSvc) {
   var boards = {
-    test: {},
-    play: {}
+    test: GameBoard(MatchSvc.boardConfig),
+    play: GameBoard(MatchSvc.boardConfig)
   };
-
-  // Register a listener for when the play board is updated
-  SocketSvc.on(SocketSvc.MessageTypes.Updates.PlayBoard, function(data) {
-    boards.play = data;
-  });
-
-  // Register a listener for when the test board is updated
-  SocketSvc.on(SocketSvc.MessageTypes.Updates.TestBoard, function(data) {
-    boards.test = data;
-  });
   
   return {
-    boards: boards
+    boards: boards  
   };
-});
+}]);
 
-coverageServices.factory('SocketSvc', ['$q', function($q) {
-    var socket = io.connect();
+coverageServices.factory('SocketSvc', ['$q', 'socketFactory' , function($q, SocketFactory) {
+    var socket = SocketFactory();
     return {
         on: function (eventName, callback) {
             socket.on(eventName, function () {
@@ -97,8 +56,8 @@ coverageServices.factory('SocketSvc', ['$q', function($q) {
  * on cursor.
  *
  */
-coverageServices.factory('CommandSvc', ['SocketSvc', function(SocketSvc) {
-    var cursor = coverageServices.Cursor();
+coverageServices.factory('CommandSvc', ['SocketSvc', 'Cursor','MatchSvc', function(SocketSvc, Cursor, MatchSvc) {
+    var cursor = Cursor();
     return {
         submitCode: function(code) {
           var err = this.processCode(code);
@@ -106,9 +65,12 @@ coverageServices.factory('CommandSvc', ['SocketSvc', function(SocketSvc) {
               return err;
           }
 
-          SocketSvc.emit(SocketSvc.MessageTypes.submitCode, {
-            actions : cursor.commandList
-          });
+          if (MatchSvc.submitLocked()) {
+            SocketSvc.emit(SocketSvc.MessageTypes.submitCode, {
+              actions : cursor.commandList
+            });
+            MatchSvc.lockSubmit();
+          } 
         },
         processCode: function(code) {
             cursor.reset();
@@ -124,7 +86,6 @@ coverageServices.factory('CommandSvc', ['SocketSvc', function(SocketSvc) {
               return err;
           }
 
-          BoardSvc.applyCursor(cursor);
         }
     }
 }]);

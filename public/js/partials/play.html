@@ -14,11 +14,21 @@
             <button class="button button-default" ng-click="editorCtrl.submitCode()">Submit</button>
             <button class="button button-default" ng-click="editorCtrl.testCode()">Test</button>
         </div>
-        <div id="boardSpace" ng-controller="BoardCtrl as board" class="container col-md-4">
-            <div ng-repeat="row in board.rows" class="row">
-                <div ng-repeat="cube in row track by $index" ng-class="board.getClass(cube)">{{cube}}</div>
+        <div id="boardSpace" ng-controller="BoardCtrl as boardCtrl" class="container col-md-4">          
+          <div ng-switch="boardCtrl.currentView">
+            <div ng-switch-when="test">
+             <div ng-repeat="row in boardCtrl.testBoardGrid track by $index" class="row">
+              <div ng-repeat="cube in row track by $index" ng-class="boardCtrl.getClass($parent.$index, $index)">
+              </div>
+             </div>
+            <div ng-switch-when="play">
+             <div ng-repeat="row in board.Ctrl.playBoardGrid" class="row">
+              <div ng-repeat="cube in row track by $index" ng-class="boardCtrl.getClass($parent.$index, $index)">
+              </div>
+             </div>
             </div>
-        </div>
+          </div>
+        </div> <!-- boardSpace -->
         <div class="container col-md-4" ng-controller="EditorCtrl as editorCtrl">
             <div ng-model="editorCtrl.content" class="panel panel-default" ui-ace="{onLoad: editorCtrl.editorLoaded}"></div>
         </div>

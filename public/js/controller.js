@@ -1,4 +1,4 @@
-var coverageControllers = angular.module('coverage.controllers', []);
+var coverageControllers = angular.module('coverage.controllers', ['coverage.services']);
 
 
 coverageControllers.controller('PlayCtrl', ['$routeParams' , function($routeParams){
@@ -21,19 +21,20 @@ coverageControllers.controller('JoinMatchCtrl', ['$location', 'MatchSvc', functi
     };
 
 }]);
-coverageControllers.controller('BoardCtrl', function ($scope) {
-    var i = 0;
-    this.rows = [];
-    for (i; i < 10; i++ ){
-        this.rows.push([1,0,1,1,0])
-    }
-
-    this.getClass = function getClass(value) {
-        var color = value === 1 ? "red" : "blue";
-        return "cube col-md-1 " + color;
+coverageControllers.controller('BoardCtrl', ['$scope','BoardSvc', function ($scope, BoardSvc) {
+    var _this = this;
+    this.views = {
+      test :'test',
+      play : 'play'
     };
-
-});
+    this.testBoardGrid = BoardSvc.boards.test.getGrid();
+    this.playBoardGrid = BoardSvc.boards.play.getGrid();
+    this.currentView = this.views.test;    
+    this.getClass = function (i,j) {
+      var playerColor = _this.testBoardGrid[i][j];
+      return 'cube '+ playerColor || 'gray';
+    }
+}]);
 
 coverageControllers.controller('EditorCtrl', [ 'CommandSvc', function(CommandSvc) {
     var _this = this,
