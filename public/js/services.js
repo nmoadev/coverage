@@ -31,14 +31,46 @@ coverageServices.factory('MatchSvc', ['$q', function($q){
    }
 }]);
 
-coverageServices.factory('ConnectSvc', function() {
+coverageServces.factory('BoardSvc', function(){
 
 });
 
-coverageServices.factory('CommandSvc', [function() {
+coverageServices.factory('SocketSvc', function() {
+    var socket = io.connect();
     return {
+        on: function (eventName, callback) {
+            socket.on(eventName, function () {
+                var args = arguments;
+                $rootScope.$apply(function () {
+                    callback.apply(socket, args);
+                });
+            });
+        },
+        emit: function (eventName, data, callback) {
+            socket.emit(eventName, data, function () {
+                var args = arguments;
+                $rootScope.$apply(function () {
+                    if (callback) {
+                        callback.apply(socket, args);
+                    }
+                });
+            })
+        }
+    };
+});
+
+coverageServices.factory('CommandSvc', [function() {
+    var cursor = coverageServices.Cursor();
+    return {
+        submitCode: function(code) {
+          var err = this.processCode(code);
+          if (err) {
+              return err;
+          }
+
+//          SocketSvc.send();
+        },
         processCode: function(code) {
-            var cursor = coverageServices.Cursor();
             try {
                 eval(code);
                 console.log(cursor.commandHistory)

@@ -52,21 +52,11 @@ coverageControllers.controller('EditorCtrl', [ 'CommandSvc', function(CommandSvc
         _editor.getSession().setUseSoftTabs(true);
         _editor.on('change', _this.onEditorChange(_editor));
     };
-    this.submitCommand = function() {
-        CommandSvc.processCode(this.content);
+    this.submitCode = function() {
+        _this.errors = CommandSvc.submitCode(this.content);
+    }
+    this.testCode = function() {
+        _this.errors = CommandSvc.testCode(this.content);
     }
 
 }]);
-
-coverageControllers.controller('SpriteCtrl', function () {
-    this.x = 0;
-    this.y = 0;
-    this.width = 0;
-    this.height = 0;
-    this.offset = 0;
-    this.background = "url(\"../images/DazeBeforeChristmasSheet1.gif\");"
-    this.getStyle = function() {
-        return {
-        }
-    }
-});
