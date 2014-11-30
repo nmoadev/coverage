@@ -14,14 +14,20 @@ coverageServices.factory('MatchSvc', ['$q', function($q){
    }
 }]);
 
-coverageServices.factory('BoardSvc', ['SocketSvc', 'GameBoard', 'MatchSvc', function(SocketSvc, GameBoard, MatchSvc) {
+coverageServices.factory('BoardSvc', ['SocketSvc', 'GameBoard', 'MatchSvc', '$q', function(SocketSvc, GameBoard, MatchSvc, $q) {
   var boards = {
     test: GameBoard(MatchSvc.boardConfig),
     play: GameBoard(MatchSvc.boardConfig)
   };
   
   return {
-    boards: boards  
+    boards: boards,
+    applyActions: function applyActions(actions) {
+      boards.test.executeTurn({
+        actions: actions,
+        playerColor: "blue"
+      });
+    }
   };
 }]);
 
@@ -56,7 +62,7 @@ coverageServices.factory('SocketSvc', ['$q', 'socketFactory' , function($q, Sock
  * on cursor.
  *
  */
-coverageServices.factory('CommandSvc', ['SocketSvc', 'Cursor','MatchSvc', function(SocketSvc, Cursor, MatchSvc) {
+coverageServices.factory('CommandSvc', ['SocketSvc', 'Cursor','MatchSvc','BoardSvc', function(SocketSvc, Cursor, MatchSvc, BoardSvc) {
     var cursor = Cursor();
     return {
         submitCode: function(code) {
@@ -67,7 +73,7 @@ coverageServices.factory('CommandSvc', ['SocketSvc', 'Cursor','MatchSvc', functi
 
           if (MatchSvc.submitLocked()) {
             SocketSvc.emit(SocketSvc.MessageTypes.submitCode, {
-              actions : cursor.commandList
+              actions : cursor.getActios()
             });
             MatchSvc.lockSubmit();
           } 
@@ -85,7 +91,7 @@ coverageServices.factory('CommandSvc', ['SocketSvc', 'Cursor','MatchSvc', functi
           if (err) {
               return err;
           }
-
+          BoardSvc.applyActions(cursor.getActions());
         }
     }
 }]);

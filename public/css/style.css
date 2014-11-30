@@ -76,11 +76,13 @@ pre {
 }
 
 .cube {
-    float: left;
-    margin: 5px;
-    width: 10px;
-    height: 10px;
-    transition: background-color .5s;
+  float: left;
+  margin: 5px;
+  width: 30px;
+  border-color: lightsteelblue;
+  border-style: dashed;
+  height: 30px;
+  transition: background-color .5s;
 }
 .red {
     background-color: red;

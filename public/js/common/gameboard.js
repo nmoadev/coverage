@@ -22,18 +22,13 @@
         countSquares,
         processAction,
         checkLoc,
-        executeAction;
+        executeAction,
+        resetGrid,
+        restCursorLoc,
+        reset;
 
     checkLoc = function checkLoc(i, j) {
-        return (0 < i && i < config.rows && 0 < j && j < config.cols);
-    }
-
-    for (var i = 0; i < config.rows; i++) {
-        var row = [];
-        for (var j = 0; j < config.cols; j++) {
-            row.push("gray");
-        }
-        grid.push(row)
+        return (0 <= i && i < config.rows && 0 <= j && j < config.cols);
     };
 
     processAction = function processAction(loc, action) {
@@ -77,10 +72,10 @@
         var tempLoc = processAction(cursorLoc, action);
 
         // Check the bounds of the new location, out-of-bounds is ignored
-        if (checkLoc(tempLoc)) {
-            loc = tempLoc;
+        if (checkLoc(tempLoc[0], tempLoc[1])) {
+            cursorLoc = tempLoc;
             // Mark the grid with the player's coor, last write wins
-            grid[loc[0]][loc[1]] = playerColor;
+            grid[cursorLoc[0]][cursorLoc[1]] = playerColor;
         };
     };
 
@@ -118,17 +113,39 @@
                 }
             });
         });
-    }
+    };
 
     getGrid = function getGrid() {
       return grid;
-    }
+    };
 
+    resetGrid = function resetGrid() {  
+      grid = [];
+      for (var i = 0; i < config.rows; i++) {
+          var row = [];
+          for (var j = 0; j < config.cols; j++) {
+              row.push("gray");
+          }
+          grid.push(row)
+      };
+    };
+
+    resetCursorLoc = function resetCursorLoc() {
+      cursorLoc = [0,0];
+    };
+
+    reset = function reset() {
+      resetGrid();
+      resetCursorLoc();
+    };
+
+    reset();
     return {
       scoreRound: scoreRound,
       executeTurn: executeTurn,
       executeAction: executeAction,
-      getGrid: getGrid
+      getGrid: getGrid,
+      resetGrid: resetGrid
     };
 };
   if (typeof module !== 'undefined') {
