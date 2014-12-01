@@ -23,6 +23,7 @@ coverageServices.factory('BoardSvc', ['SocketSvc', 'GameBoard', 'MatchSvc', '$q'
   return {
     boards: boards,
     applyActions: function applyActions(actions) {
+      boards.test.reset();
       boards.test.executeTurn({
         actions: actions,
         playerColor: "blue"
@@ -55,7 +56,7 @@ coverageServices.factory('SocketSvc', ['$q', 'socketFactory' , function($q, Sock
     };
 }]);
 
-/**
+/*
  * Command Service
  *
  * Evals code using a Cursor object to create list of commands 

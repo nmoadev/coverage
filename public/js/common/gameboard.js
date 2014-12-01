@@ -15,7 +15,7 @@
   
   GameBoard = function GameBoard(config) {
     var grid = [],
-        cursorLoc = [0,0],
+        cursorLoc,
         getGrid,
         executeTurn,
         scoreRound,
@@ -24,16 +24,26 @@
         checkLoc,
         executeAction,
         resetGrid,
-        restCursorLoc,
+        resetCursorLoc,
         reset;
+
+    for (var i = 0; i < config.rows; i++) {
+        var row = [];
+        for (var j = 0; j < config.cols; j++) {
+            row.push("gray");
+        }
+        grid.push(row);
+    };
+
+    cursorLoc = [0,0];
 
     checkLoc = function checkLoc(i, j) {
         return (0 <= i && i < config.rows && 0 <= j && j < config.cols);
     };
 
-    processAction = function processAction(loc, action) {
+    processAction = function processAction(currentLoc, action) {
         // Working copy of current cursor location
-        var tempLoc = loc.slice();
+        var tempLoc = currentLoc.slice();
 
         // Switch Statement for the commands
         switch(action[0]) {
@@ -56,6 +66,7 @@
           default:
               break;
         }
+
         return tempLoc;
         // Check if the location is in bounds. Out of bounds will do nothing (for now)
 
@@ -119,19 +130,16 @@
       return grid;
     };
 
-    resetGrid = function resetGrid() {  
-      grid = [];
+    resetGrid = function resetGrid() {
       for (var i = 0; i < config.rows; i++) {
-          var row = [];
           for (var j = 0; j < config.cols; j++) {
-              row.push("gray");
+              grid[i][j] = "gray";
           }
-          grid.push(row)
       };
     };
 
     resetCursorLoc = function resetCursorLoc() {
-      cursorLoc = [0,0];
+      cursorLoc = [0, 0];
     };
 
     reset = function reset() {
@@ -145,7 +153,7 @@
       executeTurn: executeTurn,
       executeAction: executeAction,
       getGrid: getGrid,
-      resetGrid: resetGrid
+      reset: reset
     };
 };
   if (typeof module !== 'undefined') {
