@@ -6,6 +6,7 @@
       Actions;
 
   Actions = {
+    MARK: 'mark',
     UP : 'up',
     DOWN: 'down',
     LEFT: 'left',
@@ -35,7 +36,7 @@
         grid.push(row);
     };
 
-    cursorLoc = [0,0];
+    cursorLoc = [0, 0];
 
     checkLoc = function checkLoc(i, j) {
         return (0 <= i && i < config.rows && 0 <= j && j < config.cols);
@@ -47,6 +48,8 @@
 
         // Switch Statement for the commands
         switch(action[0]) {
+          case Actions.MARK:
+            break;
           case Actions.UP:
               tempLoc[0]--;
               break;
@@ -98,7 +101,7 @@
         // For each action the player submitted
         _.each(playerTurn.actions, function(action) {
           executeAction(action, playerTurn.playerColor);
-        })
+        });
     }
 
     /**

@@ -79,8 +79,8 @@ pre {
   float: left;
   margin: 5px;
   width: 30px;
-  border-color: lightsteelblue;
-  border-style: dashed;
+  /*border-color: lightsteelblue;*/
+  /*border-style: dashed;*/
   height: 30px;
   transition: background-color .5s;
 }
@@ -90,8 +90,16 @@ pre {
 
 .blue {
     background-color: blue;
+    -webkit-animation: boranim 2s;
 }
 
 .gray {
     background-color: gray;
 }
+
+@-webkit-keyframes boranim {
+    0% {border: 5px dashed lightsteelblue;}
+    50% {border: 5px inset  lightsteelblue;}
+    1000% {border: 5px dashed lightsteelblue;}
+}
+

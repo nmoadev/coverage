@@ -14,7 +14,11 @@
             <button class="button button-default" ng-click="editorCtrl.submitCode()">Submit</button>
             <button class="button button-default" ng-click="editorCtrl.testCode()">Test</button>
         </div>
-        <div id="boardSpace" ng-controller="BoardCtrl as boardCtrl" class="container col-md-4">          
+        <div id="boardSpace" ng-controller="BoardCtrl as boardCtrl" class="container col-md-4">
+            {{boardCtrl.actionCounter}}
+            <audio media-player="pling" data-playlist="playlist1">
+                <source src="sounds/pling.wav" type="audio/wav">
+            </audio>
           <div ng-switch="boardCtrl.currentView">
             <div ng-switch-when="test">
              <div ng-repeat="row in boardCtrl.testBoardGrid track by $index" class="row">
@@ -29,9 +33,6 @@
             </div>
           </div>
         </div> <!-- boardSpace -->
-        <div class="container col-md-4" ng-controller="EditorCtrl as editorCtrl">
-            <div ng-model="editorCtrl.content" class="panel panel-default" ui-ace="{onLoad: editorCtrl.editorLoaded}"></div>
-        </div>
     </div>
     <div class="row">
         <h3>Help</h3>

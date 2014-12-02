@@ -27,9 +27,21 @@ coverageControllers.controller('BoardCtrl', ['$scope','BoardSvc', function ($sco
       test :'test',
       play : 'play'
     };
+    this.actionCounter = BoardSvc.actionCounter;
     this.testBoardGrid = BoardSvc.boards.test.getGrid();
     this.playBoardGrid = BoardSvc.boards.play.getGrid();
-    this.currentView = this.views.test;    
+    this.currentView = this.views.test;
+
+    $scope.$watch(function () {
+      return _this.actionCounter(); // `this` IS the `this` above!!
+    }, function (newVal, oldVal) {
+      // A horrible horrible hack
+      if (newVal > 0) {
+        $scope.pling.play();
+      }
+    }, true);
+
+
     this.getClass = function (i,j) {
       var playerColor = _this.testBoardGrid[i][j];
       return 'cube '+ playerColor || 'gray';
