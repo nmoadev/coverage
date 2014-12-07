@@ -48,6 +48,10 @@ coverageControllers.controller('BoardCtrl', ['$scope','BoardSvc', function ($sco
     }
 }]);
 
+coverageControllers.controller('ScoreCtrl', ['MatchSvc', function (MatchSvc) {
+  this.scores = MatchSvc.scores;
+}]);
+
 coverageControllers.controller('EditorCtrl', [ 'CommandSvc', function(CommandSvc) {
     var _this = this,
         content = "";
@@ -60,6 +64,9 @@ coverageControllers.controller('EditorCtrl', [ 'CommandSvc', function(CommandSvc
         }
     };
     this.editorLoaded = function(_editor) {
+        _editor.setOptions({
+          fontSize: "14px"
+        });
         _editor.getSession().setMode("ace/mode/javascript");
         _editor.getSession().setTabSize(4);
         _editor.getSession().setUseSoftTabs(true);
@@ -67,9 +74,9 @@ coverageControllers.controller('EditorCtrl', [ 'CommandSvc', function(CommandSvc
     };
     this.submitCode = function() {
         _this.errors = CommandSvc.submitCode(this.content);
-    }
+    };
+
     this.testCode = function() {
         _this.errors = CommandSvc.testCode(this.content);
-    }
-
+    };
 }]);

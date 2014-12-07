@@ -8,6 +8,7 @@ angular.module('coverage', [
     'coverage.controllers',
     'coverage.services',
     'ui.ace',
+    'ui.bootstrap',
     'mediaPlayer'
 ]).
     config(['$routeProvider', function ($routeProvider) {

@@ -1,13 +1,18 @@
 {
     "options" : {
-
+      "boardConfig" : {
+        "rows" : 5,
+        "cols" : 5
+      }
     },
     "players": {
         "red": {
-            "name":"Alain"
+            "name":"Alain",
+            "totalScore" : 30
         },
         "blue" : {
-            "name":"Adam"
+            "name":"Adam",
+            "totalScore" : 120
         }
     },
     "rounds" : [
@@ -30,5 +35,4 @@
             }
         }
     ]
-
 }

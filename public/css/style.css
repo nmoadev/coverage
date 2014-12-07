@@ -63,7 +63,6 @@ body { padding-top: 70px; }
     top:0;
 }
 
-
 pre {
     overflow: auto;
     word-wrap: normal;
@@ -75,31 +74,35 @@ pre {
     height: 200px;
 }
 
+.ace_editor .editor {
+    font-size: 16px;
+}
+
 .cube {
-  float: left;
   margin: 5px;
-  width: 30px;
-  /*border-color: lightsteelblue;*/
-  /*border-style: dashed;*/
-  height: 30px;
+  border-color: lightsteelblue;
+  border-style: dashed;
+  height: 50px;
+  width: 50px;
+  float: left;
   transition: background-color .5s;
 }
+
+.tab-content {
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+}
+
 .red {
     background-color: red;
 }
 
 .blue {
     background-color: blue;
-    -webkit-animation: boranim 2s;
 }
 
 .gray {
     background-color: gray;
-}
-
-@-webkit-keyframes boranim {
-    0% {border: 5px dashed lightsteelblue;}
-    50% {border: 5px inset  lightsteelblue;}
-    1000% {border: 5px dashed lightsteelblue;}
 }
 

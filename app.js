@@ -17,7 +17,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 var httpServer = require('http').Server(app);
 var io = require('socket.io')(httpServer);
-
+var match = io.of('/match');
 //io.on('connection', function(socket) {
 //    debug('connected');
 //    socket.on('disconnect', function (){

@@ -1,40 +1,57 @@
 <div class="container-fluid" ng-controller="PlayCtrl as play">
     <div class="row">
-    <div class="container col-md-1">
-        <fieldset disabled>
-            <label for="gameCode" class="control-label">Game Code</label>
-            <input id="gameCode" type="text" class="form-control" ng-model="play.matchCode" />
-        </fieldset>
-    </div>
+        <div class="container col-md-1">
+            <fieldset disabled>
+                <label for="gameCode" class="control-label">Game Code</label>
+                <input id="gameCode" type="text" class="form-control" ng-model="play.matchCode"/>
+            </fieldset>
+        </div>
     </div>
     <div class="row">
         <div class="container col-md-4" ng-controller="EditorCtrl as editorCtrl">
             <h3>Your Code</h3>
-            <div ng-model="editorCtrl.content" class="panel panel-default" ui-ace="{onLoad: editorCtrl.editorLoaded}"></div>
+
+            <div ng-model="editorCtrl.content" class="panel panel-default"
+                 ui-ace="{onLoad: editorCtrl.editorLoaded}"></div>
             <button class="button button-default" ng-click="editorCtrl.submitCode()">Submit</button>
             <button class="button button-default" ng-click="editorCtrl.testCode()">Test</button>
         </div>
-        <div id="boardSpace" ng-controller="BoardCtrl as boardCtrl" class="container col-md-4">
+        <div id="boardSpace" ng-controller="BoardCtrl as boardCtrl" class="container col-md-2">
             {{boardCtrl.actionCounter}}
             <audio media-player="pling" data-playlist="playlist1">
                 <source src="sounds/pling.wav" type="audio/wav">
             </audio>
-          <div ng-switch="boardCtrl.currentView">
-            <div ng-switch-when="test">
-             <div ng-repeat="row in boardCtrl.testBoardGrid track by $index" class="row">
-              <div ng-repeat="cube in row track by $index" ng-class="boardCtrl.getClass($parent.$index, $index)">
-              </div>
-             </div>
-            <div ng-switch-when="play">
-             <div ng-repeat="row in board.Ctrl.playBoardGrid" class="row">
-              <div ng-repeat="cube in row track by $index" ng-class="boardCtrl.getClass($parent.$index, $index)">
-              </div>
-             </div>
+            <h3> The Grid</h3>
+            <div ng-switch="boardCtrl.currentView">
+                <div ng-switch-when="test">
+                    <div ng-repeat="row in boardCtrl.testBoardGrid track by $index" class="row">
+                        <div ng-repeat="cube in row track by $index"
+                             ng-class="boardCtrl.getClass($parent.$index, $index)">
+                        </div>
+                    </div>
+                </div>
+                <div ng-switch-when="play">
+                    <div ng-repeat="row in board.Ctrl.playBoardGrid" class="row">
+                        <div ng-repeat="cube in row track by $index"
+                             ng-class="boardCtrl.getClass($parent.$index, $index)">
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div> <!-- boardSpace -->
-    </div>
+        </div><!-- boardSpace -->
+        <div id="scoreSpace" ng-controller="ScoreCtrl as scoreCtrl" class="container col-md-2">
+            <h3>Scores</h3>
+            <table class="table table-condensed">
+                <tr ng-repeat="score in scoreCtrl.scores">
+                    <td>{{score.playerName}}</td>
+                    <td>{{score.value}}</td>
+                </tr>
+            </table>
+        </div>
+</div>
     <div class="row">
-        <h3>Help</h3>
+        <div class="container col-md-4">
+
+        </div>
     </div>
 </div>

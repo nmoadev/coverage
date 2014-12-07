@@ -8,6 +8,18 @@ coverageServices.factory('MatchSvc', ['$q', function ($q) {
       deferred.resolve(Math.floor(Math.random() + 1));
       return deferred.promise;
     },
+    scores: [
+      {
+        playerName: "Alain",
+        playerColor: "Blue",
+        value: 50
+      },
+      {
+        playerName: "Adam",
+        playerColor: "Red",
+        value: 23
+      }
+    ],
     boardConfig: {
       rows: 5,
       cols: 5
