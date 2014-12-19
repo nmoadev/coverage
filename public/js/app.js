@@ -9,6 +9,7 @@ angular.module('coverage', [
     'coverage.services',
     'ui.ace',
     'ui.bootstrap',
+    'ngLodash',
     'mediaPlayer'
 ]).
     config(['$routeProvider', function ($routeProvider) {

@@ -1,7 +1,25 @@
 var coverageServices = angular.module('coverage.services', ['coverage.Cursor', 'coverage.GameBoard', 'btford.socket-io']);
 
 
-coverageServices.factory('MatchSvc', ['$q', function ($q) {
+coverageServices.factory('MatchSvc', ['SocketSvc', function (SocketSvc) {
+  var matchData = {},
+      joinMatch,
+      lockSubmit,
+      submitLocked;
+  SocketSvc.on('matchJoined', function(matchData) {
+    match = matchData;
+  });
+
+  joinMatch = function joinMatch(matchCode) {
+    SocketSvc.emit('joinMatch', matchCode);
+  
+  };
+  
+  submitTurn = function submitTurn(code) {
+    var actions = ActionsSvc.processCode(code);
+    SocketSvc.emit('submitTurn', actions);
+  };
+  
   return {
     newMatch: function () {
       var deferred = $q.defer();
@@ -38,15 +56,15 @@ coverageServices.factory('BoardSvc', ['SocketSvc', 'GameBoard', 'MatchSvc', '$q'
   return {
     boards: boards,
     actionCounter: function(){ return actionCounter;},
-    applyActions: function applyActions(actions) {
+    applyActions: function applyActions(actions, board) {
         var promise = $timeout(function(){}, 10);
-        boards.test.reset();
+        board.reset();
         actionCounter = 0;
         angular.forEach(actions, function (action) {
           promise = promise.then(function () {
             return $timeout(function () {
               actionCounter++;
-              boards.test.executeAction(action, "blue");
+              board.executeAction(action, MatchSvc.thisPlayerColor);
             }, 500);
           });
         });
@@ -86,36 +104,38 @@ coverageServices.factory('SocketSvc', ['$q', 'socketFactory' , function ($q, Soc
  * on cursor.
  *
  */
-coverageServices.factory('CommandSvc', ['SocketSvc', 'Cursor', 'MatchSvc', 'BoardSvc', function (SocketSvc, Cursor, MatchSvc, BoardSvc) {
+coverageServices.factory('ActionsSvc', ['SocketSvc', 'Cursor', 'MatchSvc', 'BoardSvc', function (SocketSvc, Cursor, MatchSvc, BoardSvc) {
   var cursor = Cursor();
   return {
-    submitCode: function (code) {
-      var err = this.processCode(code);
-      if (err) {
-        return err;
-      }
-
-      if (MatchSvc.submitLocked()) {
-        SocketSvc.emit(SocketSvc.MessageTypes.submitCode, {
-          actions: cursor.getActios()
-        });
-        MatchSvc.lockSubmit();
-      }
-    },
     processCode: function (code) {
       cursor.reset();
       try {
         eval(code);
       } catch (e) {
-        return e;
+        return {
+          actions:null,
+          error: e
+        };
       }
-    },
-    testCode: function (code) {
-      var err = this.processCode(code);
-      if (err) {
-        return err;
-      }
-      BoardSvc.applyActions(cursor.getActions());
+      return {
+        actions: cursor.getActions(),
+        error: null
+      };
     }
   }
 }]);
+
+coverageServices.factory('TestCodeSvc', [ function () {
+  return {
+    testCode: function (code) {
+      var processResult = this.processCode(code);
+      if (processResult.error === null && processResult.actons !== null) {
+        BoardSvc.applyActions(ActionsSvc.processCode(code), BoardSvc.boards.test, MarchSvc.thisPlayerColor);
+        return null;
+      } else {
+        return processResult.error;
+      }
+    }
+  }
+}]);
+
