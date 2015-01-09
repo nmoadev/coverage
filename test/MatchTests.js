@@ -29,11 +29,11 @@ describe(__filename, function() {
       var match,
           playerBobColor = null,
           playerJimColor = null,
-          eventSpy;
+          addPlayerEventSpy;
       match = Match(
         {
           matchCode: '1122GXYF',
-          maxPlayers: 2,
+          maxPlayerCount: 2,
           boardConfig: {
             rows: 5,
             cols: 5
@@ -45,21 +45,24 @@ describe(__filename, function() {
       match.getState().should.equal(Match.MatchStates.wait_players);
 
       // Add the first player, checking for events
-      eventSpy = sinon.spy();
-      match.once(Match.MatchEvents.add_player, eventSpy);
+      addPlayerEventSpy = sinon.spy();
+      match.once(Match.MatchEvents.add_player, addPlayerEventSpy);
       playerBobColor = match.addPlayer('bob');
       playerBobColor.should.be.String;
       
       // Assert add_player was emitted
-      eventSpy.should.have.property('called', true);
+      addPlayerEventSpy.should.have.property('called', true);
 
-      eventSpy = sinon.spy();
-      match.once(Match.MatchEvents.add_player, eventSpy);
+
+      addPlayerEventSpy = sinon.spy();
+      match.once(Match.MatchEvents.add_player, addPlayerEventSpy);
       playerJimColor = match.addPlayer('jim');
       playerJimColor.should.be.String;
 
       // Assert add_player was emitted
-      eventSpy.should.have.property('called', true);
+      addPlayerEventSpy.should.have.property('called', true);
+
+
 
     });
   });
