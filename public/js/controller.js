@@ -10,7 +10,9 @@ coverageControllers.controller('JoinMatchCtrl', ['$location', 'MatchSvc', functi
     this.currentStep = "name";
     this.goToJoinView = function() {_this.currentStep = "join"};
     this.joinMatch = function(matchCode) {
-        $location.path("/play/" + matchCode);
+        MatchSvc.joinMatch(matchCode).then(function(matchInfo) {
+          $location.path("/play/" + matchInfo.matchCode);
+        });
     };
     this.createMatch = function() {
         MatchSvc.newMatch().then(
@@ -49,10 +51,11 @@ coverageControllers.controller('BoardCtrl', ['$scope','BoardSvc', function ($sco
 }]);
 
 coverageControllers.controller('ScoreCtrl', ['MatchSvc', function (MatchSvc) {
-  this.scores = MatchSvc.scores;
+  this.players = MatchSvc.matchData.players;
+  this.rounds = MatchSvc.matchData.rounds
 }]);
 
-coverageControllers.controller('EditorCtrl', [ 'CommandSvc', function(CommandSvc) {
+coverageControllers.controller('EditorCtrl', [ 'TestCodeSvc', 'MatchSvc', function(TestCodeSvc, MatchSvc) {
     var _this = this,
         content = "";
     this.onEditorChange = function onEditorChange(editor) {
@@ -73,10 +76,10 @@ coverageControllers.controller('EditorCtrl', [ 'CommandSvc', function(CommandSvc
         _editor.on('change', _this.onEditorChange(_editor));
     };
     this.submitCode = function() {
-        _this.errors = CommandSvc.submitCode(this.content);
+        _this.errors = MatchSvc.submitTurn(this.content);
     };
 
     this.testCode = function() {
-        _this.errors = CommandSvc.testCode(this.content);
+        _this.errors = TestCodeSvc.testCode(this.content);
     };
 }]);

@@ -86,6 +86,7 @@ pre {
   width: 50px;
   float: left;
   transition: background-color .5s;
+  -webkit-transition: background-color .5s;
 }
 
 .tab-content {

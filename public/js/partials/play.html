@@ -42,9 +42,19 @@
         <div id="scoreSpace" ng-controller="ScoreCtrl as scoreCtrl" class="container col-md-2">
             <h3>Scores</h3>
             <table class="table table-condensed">
-                <tr ng-repeat="score in scoreCtrl.scores">
-                    <td>{{score.playerName}}</td>
-                    <td>{{score.value}}</td>
+              <tr>
+                <th>Player</th>
+                <th>Total</th>
+                <th ng-repeat="round in scoreCtrl.ounds">
+                  {{ $index }}
+                </th>
+              </tr>
+                <tr ng-repeat="(playerColor, player) in scoreCtrl.players">
+                    <td>{{player.name}}</td>
+                    <td>{{player.score}}</td>
+                    <td ng-repeat="round in scoreCtrl.rounds">
+                      {{round[playerColor].score}}
+                    </td>
                 </tr>
             </table>
         </div>

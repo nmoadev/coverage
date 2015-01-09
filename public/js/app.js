@@ -15,7 +15,7 @@ angular.module('coverage', [
     config(['$routeProvider', function ($routeProvider) {
         $routeProvider
             .when('/join', {
-                templateUrl: 'js/partials/join_game.html'
+                templateUrl: 'js/partials/join.html'
             })
             .when('/play/:matchcode', {
                templateUrl: 'js/partials/play.html',

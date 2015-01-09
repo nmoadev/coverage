@@ -189,10 +189,8 @@
    */
   if (isNode) {
     var lodash = require('lodash');
-    module.exports = {
-      GameBoard: GameBoardModule(lodash),
-      Actions: Actions
-    };
+    module.exports = GameBoardModule(lodash);
+    module.exports.Actions = Actions;
   } else if (isAngular) {
     angular.module('coverage.GameBoard', [])
       .factory('GameBoard', ['lodash', function (lodash) {

@@ -35,6 +35,7 @@ io = SocketIO(httpServer);
 matchChannel = io.of('/match');
 
 matchChannel.on('connect', function onConnect(socket) {
+  console.log('connection');
   MatchConnector(socket, matchManager);
 });
 

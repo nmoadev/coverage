@@ -1,26 +1,86 @@
 var coverageServices = angular.module('coverage.services', ['coverage.Cursor', 'coverage.GameBoard', 'btford.socket-io']);
 
 
-coverageServices.factory('MatchSvc', ['SocketSvc', function (SocketSvc) {
+coverageServices.factory('MatchSvc', ['SocketSvc', '$q', 'ActionSvc', function (SocketSvc, $q, ActionSvc) {
   var matchData = {},
       joinMatch,
       lockSubmit,
-      submitLocked;
-  SocketSvc.on('matchJoined', function(matchData) {
-    match = matchData;
+      submitLocked,
+      thisPlayerColor;
+
+  SocketSvc.forward(
+    [
+      'matchJoined',
+      'wait_players',
+      'add_player',
+      'start_round',
+      'accept_turn',
+      'reject_turn',
+      'end_round',
+      'end_match'
+    ]);
+
+  SocketSvc.on('matchJoined', function onMatchJoined(matchData) {
+    matchData = matchData;
   });
 
-  joinMatch = function joinMatch(matchCode) {
-    SocketSvc.emit('joinMatch', matchCode);
+  SocketSvc.on('wait_players', function onWaitPlayers() {
+    
+  });
   
-  };
+  SocketSvc.on('add_player', function onAddPlayer(matchData) {
+    matchData = matchData;
+  });
+
+  SocketSvc.on('start_round', function onStartRound() {
+    matchData = matchData;
+  });
+
+  SocketSvc.on('accept_turn', function onAcceptTurn() {
+    
+  });
+
+  SocketSvc.on('reject_turn', function onRejectTurn() {
+  
+  });
+
+  SocketSvc.on('end_round', function onEndRound() {
+  
+  });
+
+  SocketSvc.on('end_match', function onEndMatch() {
+  
+  });
+
+  joinMatch = function joinMatch(matchCode, playerName, cb) {
+    var deferred = $q.defer();
+
+    SocketSvc.once('matchJoined', function(matchPlayerInfo){
+      thisPlayerColor = matchPlayerInfo.playerColor;
+      deferred.resolve(matchPlayerInfo);
+    });
+
+    SocketSvc.emit('joinMatch', matchCode);
+    return deferred.promise;
+  }; 
   
   submitTurn = function submitTurn(code) {
-    var actions = ActionsSvc.processCode(code);
+    var actions,
+        deferred;
+    actions = ActionSvc.processCode(code);
+    deferred = $q.defer();
+    SocketSvc.once('accept_turn', function() {
+      deferred.resolve();
+    });
     SocketSvc.emit('submitTurn', actions);
+    return deferred.promise;
   };
   
   return {
+    thisPlayerColor: function getThisPlayerColor() {
+      return thisPlayerColor;
+    },
+    joinMatch: joinMatch,
     newMatch: function () {
       var deferred = $q.defer();
       deferred.resolve(Math.floor(Math.random() + 1));
@@ -41,7 +101,9 @@ coverageServices.factory('MatchSvc', ['SocketSvc', function (SocketSvc) {
     boardConfig: {
       rows: 5,
       cols: 5
-    }
+    },
+    matchData: matchData,
+    submitTurn: submitTurn
   }
 }]);
 
@@ -64,7 +126,7 @@ coverageServices.factory('BoardSvc', ['SocketSvc', 'GameBoard', 'MatchSvc', '$q'
           promise = promise.then(function () {
             return $timeout(function () {
               actionCounter++;
-              board.executeAction(action, MatchSvc.thisPlayerColor);
+              board.executeAction(action, MatchSvc.thisPlayerColor());
             }, 500);
           });
         });
@@ -73,8 +135,8 @@ coverageServices.factory('BoardSvc', ['SocketSvc', 'GameBoard', 'MatchSvc', '$q'
   };
 }]);
 
-coverageServices.factory('SocketSvc', ['$q', 'socketFactory' , function ($q, SocketFactory) {
-  var socket = SocketFactory();
+coverageServices.factory('SocketSvc', ['$q', 'socketFactory', '$rootScope', function ($q, SocketFactory, $rootScope) {
+  var socket = SocketFactory({namespace: '/match'});
   return {
     on: function (eventName, callback) {
       socket.on(eventName, function () {
@@ -93,7 +155,18 @@ coverageServices.factory('SocketSvc', ['$q', 'socketFactory' , function ($q, Soc
           }
         });
       })
-    }
+    },
+    once: function (eventName, callback) {
+      socket.once(eventName, function() {
+        var args = arguments;
+        $rootScope.$apply(function() {
+          if (callback) {
+            callback.apply(socket, args);
+          }
+        });
+      });
+    },
+    forward: socket.forward
   };
 }]);
 
@@ -104,7 +177,7 @@ coverageServices.factory('SocketSvc', ['$q', 'socketFactory' , function ($q, Soc
  * on cursor.
  *
  */
-coverageServices.factory('ActionsSvc', ['SocketSvc', 'Cursor', 'MatchSvc', 'BoardSvc', function (SocketSvc, Cursor, MatchSvc, BoardSvc) {
+coverageServices.factory('ActionSvc', ['Cursor', function (Cursor) {
   var cursor = Cursor();
   return {
     processCode: function (code) {
@@ -125,12 +198,12 @@ coverageServices.factory('ActionsSvc', ['SocketSvc', 'Cursor', 'MatchSvc', 'Boar
   }
 }]);
 
-coverageServices.factory('TestCodeSvc', [ function () {
+coverageServices.factory('TestCodeSvc', [ 'ActionSvc', 'BoardSvc', 'MatchSvc', function (ActionSvc, BoardSvc, MatchSvc) {
   return {
     testCode: function (code) {
-      var processResult = this.processCode(code);
-      if (processResult.error === null && processResult.actons !== null) {
-        BoardSvc.applyActions(ActionsSvc.processCode(code), BoardSvc.boards.test, MarchSvc.thisPlayerColor);
+      var processResult = ActionSvc.processCode(code);
+      if (processResult.error === null && processResult.actions !== null) {
+        BoardSvc.applyActions(processResult.actions, BoardSvc.boards.test, MatchSvc.thisPlayerColor);
         return null;
       } else {
         return processResult.error;
